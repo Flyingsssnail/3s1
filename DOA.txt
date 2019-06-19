@@ -1,0 +1,433 @@
+Stack ------ LIFO, operaitons including (createStack, push, pop, top, emptystack, etc.)
+	------ form: array or linked list
+
+Queue ------ FIFO, operations including (createQueue, enqueue, dequeue, head, emptyQueue, etc.)
+	------ form: array or linked list
+
+Running time ------ Worst-case analysis, Best-case analysis, Average-case analysis, 
+		Amortised analysis (calculate cost over many runs)
+	------ Big-Oh notation: upper bounds of running time complexity
+	------ Big-Omega notation: lower bounds of running time complexity
+	------ Big-Theta notation: exact order of growth of running time complexity
+		They all have a Don't Care area when n is really small
+
+	------ close form: one without recursion 
+		e.g.   M(0) = 0, M(n) = M(n / 2) + 1 for n > 0
+		try telescoping:
+			C(n) = C(n/2) + 1
+			        = C(n/4) + 1 + 1
+			        ...
+			        = [... ... +1 + 1 + 1] (1+ln(n) times)
+		Hence C(n) = Theta(ln(n))
+	------ master theorem: 
+		recurrence: T(n) = aT(n/b) + f(n),  f(n) express the time spent on dividing a problem into b
+ 				sub-problems and combining the a results
+		------ for constant a >= 1, b >= 1 and f(n) in Theta(n ^ d), d >= 0, the recurrence has
+ 			solution: T(n) 	= Theta(n ^ d) if a < b ^ d
+					= Theta(n ^ d * ln(n)) if a = b ^ d
+					= Theta(n ^ (logb(a)) if a > b ^ d
+			
+
+Sorting Algorithm ------ inplace (does not require additional memory), stable (preserves the relative order of
+ 		elements even with identical keys) and input-insensitive (running time is independent of
+ 		input properties other than size)
+
+Brute force ------ consider each case and run them all to find the result
+	------ simple, easy to program, widely applicable
+	------ inefficient
+
+Exhaustive Search: ...
+Selection Sort: ...
+Close Pair Algorithm (two dimensional): 
+			function 1 (O(n^2)):
+			           for i in nodes do	
+				for j in other nodes do
+				    find distance(i, j)
+				    perserve the smallest distance
+
+			function 2 (O(log(n)):
+				record points in order of x value in byX
+				record points in order of y vlaue in byY
+				m <~ medium of byX
+				find minimum distance points for x <= m by byY, record points and dL
+				find minimum distance points for x >= m by byY, record points and dR
+				minsq <~ [min(dL, dR)]^2
+				copy all points of byY with |x - m| < min(dL, dR) to array S
+				k <~ S length
+				for i <~ 0 to k - 2 do
+				    j <~ i + 1
+				    while j <= k - 1 and (S[j].y - S[i].y)^2 < minsq do
+				        minsq <~ min(minsq, distance(S[i], S[j]) ^ 2)
+				        j = j + 1
+
+Graph traversal ------ depth-first search and breadth-first search
+		------ Graph: G = <V, E>, V: set of nodes or vertices, E: set of edges
+		------ types of graph: undirected, directed, connected, unconnected, unweighted, weighted,
+ 				dense, sparse, cyclic, acyclic (tree), directed cyclic, directed acyclic (dag)
+		------ in-degree: numbers of edges going to v, out-degree: numbers of edges going from v
+		------ graph representation: adjacency matrix, adjacency list, sets (V, E)
+
+BFS: explore x, y and z before exploring any of their neighboring nodes
+	with adjacent list, time complexity is Theta( |V| + |E| )
+	function BFS(<V, E>)
+	    mark each node in V with 0
+	    count <~ 0, init(queue)  # create an empty queue
+	    for each v in V do
+	         if v is marked 0 then
+		count <~ count + 1
+		mark v with count
+		inject(queue, v)  # queue containing just v
+		while queue is non-empty do
+		    u <~ eject(queue)  # dequeues u
+		    for each edge (u, w) adjacent to u do
+		        if w is marked with 0 then
+			count <~ count + 1
+			mark w with count
+			inject(queue, w)  # enqueues w
+
+DFS: based on backtracking, explore x then its neighboring nodes and so on
+	with adjacent list, time complexity is Theta( |V| + |E| )
+	function DFS(<V, E>)
+	    mark each node in V with 0
+	    count <~ 0
+	    for each v in V do
+	        if v is marked 0 then
+		DFSEXPLORE(v)
+
+	function DFSEXPLORE(v)
+	    count <~ count + 1
+	    mark v with count
+	    for each edge (v, w) do
+	        if w is marked with 0 then
+		DFSEXPLORE(w)
+
+Tepological Sorting ------ try to linearize the graph so that it orders the nodes in a sequence v1, v2, ......, vn such
+ 		that or each edge (vi, vj) in E, we have i < j.
+	Method 1:
+		1. Perform DFS and note the order in which nodes are popped off the stack
+		2. list the nodes in the reverse of that order
+	Method 2:
+		repeatedly select a random source (nodes with 0 in-degree), list and remove it from the graph
+		drawback: repeatedly scan the graph
+
+Greedy Algorithm ------ make decisions based on locally best choice
+
+Prim's algorithm: finding minimum spanning trees (a sub-graph which is a tree with minimal weight)
+Dijkstra's algorithm: finding single-source shortest paths
+
+Priority queue ------ set of elements with a priority and elements are ejected according to priority
+		------ operations including find, insert, test empty, eject, etc.
+
+Prim's Algorithm:
+	function PRIM(<V, E>)
+	    for each v in V do
+	         cost[v] <~ infinity
+	         prev[v] <~ null
+	    pick initial node v0
+	    cost[v0] <~ 0
+	    Q <~ INITPRIORITYQUEUE(V)  # priorities are cost values
+	    while Q is non-empty do
+	        u <~ EJECTMIN(Q)
+	        for each (u, w) in E do
+	            if w in Q and weight(u, w) < cost[w] then
+			cost[w] <~ weight(u, w)
+			prev[w] <~ u
+	    	    UPDATE(Q, w, cost[w])  # rearranges priority queue
+
+	------ for each node we look through the edges to find those incident to the node, and pick the one
+ 	with smallest cost, thus we get O( |V| * |E| ), however, we can do better with adjacent list and min-
+	heap for the priority queue.
+
+Dijkstra's algorithm:
+	function DIJKSTRA(<V, E>, v0)
+	    for each v in V do
+	         dist[v] <~ infinity
+	         prev[v] <~ null
+	    dist[v0] <~ 0
+	    Q <~ INITPRIORITYQUEUE(V)  # priorities are distances
+	    while Q is non-empty do
+	        u <~ EJECTMIN(Q)
+	        for each (u, w) in E do
+	            if w in Q and dist[u] + weight(u, w) < dist[w] then
+			dist[w] <~ dist[u] + weight(u, w)
+			prev[w] <~ u
+		    UPDATE(Q, w, dist[w])  # rearranges priority queue
+	------ same time complexity as Prim's algorithm
+
+Divide and Conquer
+
+Preorder: 
+	function preordertraverse(T)
+	    if T is non-empty then
+	        visit Troot
+	        preordertraverse(Tleft)
+	        preordertraverse(Tright)
+Inorder:
+	function inordertraverse(T)
+	    if T is non-empty then
+	        inordertraverse(Tleft)
+	        visit Troot
+	        inordertraverse(Tright)
+PostOrder:
+	function postordertraverse(T)
+	    if T is non-empty then
+	        postordertraverse(Tleft)
+	        postordertraverse(Tright)
+	        visit Troot
+LevelOrder:
+	function levelordertraverse(T)
+	    inject(Troot)  # stack
+	    visit Troot
+	    if Tleft is non-empty then
+	        inject(Tleft)
+	    if Tright is non-empty then
+	        inject(Tright)
+
+Dynamic programming ------ Warshall's algorithm, Floyd's algorithm, The Coin-Row problem, The Knapsack problem
+Warshall's algorithm: computes the transitive closure of a binary relation (or a directed graph), present as a matrix
+		an edge (a, z) is in the transitive closure of graph G iff there is a path in G from a to z.
+		Using nodes that are no larger than some K as 'stepping stones'
+		------ time complexity is O(n ^ 3)
+		function WARSHALL(A[1...n, 1...n])
+		    R0 <~ A
+		    for k <~ 1 to K do
+		        for i <~ 1 to n do
+		            if A[i, k] then
+			    	for j <~ 1 to n do
+			    	    if A[k, j] then
+			        	A[i, j] <~ 1
+
+Floyd's algorithm: solves the all-pairs shortest-path problem for weighted graphs with positive weights
+		assume given a weight matrix W that holds all the edges' weights(if no edge from node i to j,
+ 		let W[i, j] = infinity)
+		Using nodes that are no larger than some K as 'stepping stones'
+		------ time complexity is O(n ^ 3)
+		function FLOYD(W[1...n, 1...n])
+		    D <~ W
+		    for k <~ 1 to K do
+		        for i <~ 1 to n do
+		            for j <~ 1 to n do
+				D[i, j] <~ min(D[i, j], D[i, k] + D[k, j])
+		    return D
+		------ dynamic works because of something the problme and its sub-problem shares in
+ 		common, in this case, if x1-x2-...xi-...-xn is a shortest path from x1 to xn, then x1-x2-...-xi is a
+ 		shortest path from x1 to xi.
+
+Selection Sort: find max, place in the front, repeat. Simple, consistent, slow O(n^2), stability
+Insertion Sort: maintain a sorted array, insert one element at a time. Mostly slow O(n^2), but good best case O(n) fast on almost sorted arrays
+	     input sensitive
+Counting Sort: count the number of appearances of each key, then rebuild the sorted array. Great performance when key values are limited O(n)
+	     input sensitive, could be unstable or stable.
+Merge Sort: divide into two halves, merging sorted lists. O(nlog(n)) time, O(n) memory. stable, not in-place, relatively input-sensitive.
+	     Efficient for sorting linked list, good for large data.
+Quick Sort: choose a pivot, partition the array into a1 > pivot and a2 < pivot, sort them separately, repeat the process on a1 and a2.
+	     best case O(nlog(n)), worst case O(n^2), stable? depend on the partition step, in-place. input sensitive? depends on the partition step
+
+Heap ------ maintain a complete binary tree structure (height difference at every node must be not greater than 1) such that each parent is not smaller than its children
+	------ operations: insertion O(log(n)) removal O(log(n)) converting an array to a heap: naive version O(nlog(n))
+	------ root is the largest element, each subtree is a heap, height of a heap is 1 + log(n)
+	------ building a heap bottom-up: 
+		leaf nodes are heaps
+		go to the nodes in the level above the leaves
+		ensure that the heap property holds for each such node
+		repeat for the levels above
+		stop once root is a heap
+		O(n)
+		function BOTTOMDOWN(A[0...(2^k - 1)])
+		    m <~ 2^(k-2)
+		    while m > 0 do
+			for p <~ m to 2m - 1 do  # nodes on same level
+			    SiftDown(heap, p)
+			m <~ m / 2
+
+		function SiftDown(heap[0,...(n-1)], p)
+		    while 2p < n-1 and (heap[p] < heap[2p] or heap[p] < heap[2p+1]) do
+			t <~ maxChild(heap, 2p, 2p+1)
+			swap(heap[p], heap[t])
+			p <~ t
+
+Heap Sort ------ turn an array into a heap, apply the root removal operations n - 1 times. O(nlog(n))
+		in-place, unstable, generally slower than quicksort, but better performance than it
+
+Dynamic programming ------ an optimal solution to an instance can be obtained by combining optimal solutions to the sub-instances
+The Coin-Row Problem: select a subset of coins to maximize the total value, no two adjacent coins can be selected.
+The Knapsack Problem: select a subset of items to maximize the value while respecting the capacity constraint
+
+Binary Tree ------ full binary tree: each node has 0 or 2 children.
+		 complete tree: each level filled left to right
+Binary Search Tree ------ Nleft < Nroot && Nright > Nroot
+		insertion: O(height)
+		search: imbalanced BST worst case O(n), balanced BST guarantee O(log(n))
+Self-balancing trees ------ AVL trees, red-black trees, splay trees
+Representation changes ------ 2-3 trees, 2-3-4 trees, B-trees
+
+AVL Trees: Named after Adelson-Velsky and Landis
+	balance factor = height difference between left sub-tree and right sub-tree
+	AVL tree: BST which the balance factor is -1, 0, 1 for all sub-trees
+	insertion: Theta(log(n)), deletion: Theta(log(n))
+
+R-rotation, L-rotation: left middle nodes become the top, higher nodes becomes its left or right sub-tree,
+		connect its previous left or right sub-tree to the right or left of the original top rn.
+RL-rotation, LR-rotation: lowest become the top, top becomes its left or right sub-tree,
+		connect its left or right sub-tree to the middle to replace its position, connects the other sub-tree to the original top rn.
+
+Red-Black tree: BST with its nodes are colored red or black, so that
+		1. no red node has a red child.
+		2. every path from the root to the fringe hsa the same number of black nodes
+
+Splay tree: BST which is not only self-adjusting, but also adaptive. Frequently accessed items are brought closer to the root, so their access becomes cheaper.
+
+2-3 trees / 2-3-4 trees: a node holds 2 items with 3 childrens / 3 items with 4 children, O(log(n))
+		1. insert a key to the leaf node, if it was full, split the smallest and the largest number to form their own individual 2-nodes.
+		2. the middle key is promoted to the parent node.
+		
+Hash Function ------ mapping h: K1 ~> K2
+		------ opreations including insert, remove, find, etc.
+		------ challenges including Design of hash functions, Collision handling
+		------ drawbacks: no order, deletion is virtually impossible if separate chaining is not used, hard to predict the volume of data, rehashing is expensive
+		------ pros: information retrieval
+
+Handling Long Strings as Keys: hash(s) = (sum(i=0 to |s| - 1) of {chr(si) * N ^ (|s| - i - 1)}) mod m   # N is the amount of distinct characters in string s
+
+Horner's rule in C:
+	unsigned hash(char *v) {
+		int h = 0;
+		while (*v != '\0') {
+			h = (h << 5 + *v++) % m;  // for N = 32
+		}
+		return h;
+	}
+
+Separate Chaining: solving the collision problem, Load Factor a = n/m where n is the number of items stored in a cell
+		the cell in the array is a linked list
+		good in a dynamic environment, when keys are hard to predict. The chain can be ordered. Deletion is easy. Use extra storage for links
+
+Open addressing (closed hashing) ------ linear probing & double hashing (prerequisite: load factor <= 1)
+		should always avoid the situation where endless loop might happens
+
+Linear probing: offer the next k-th free cell to the key when collision happen, k is the skip factor
+		clustering is a major problem. deletion is almost impossible
+
+Double hashing: use of another hash function to determine an offset to be used in probing for a free cell e.g. s(k) = 1 + k mod 97
+		if h(k) is occupied, next try h(k) + s(k), then h(k) + 2s(k), and so on.
+
+Rehashing: keep track of the load factor and to rehash when it reaches, say, 0.9.
+		refresh: allocating a larger hash table, revisiting each item, calculating its hash address in the new table and inserting it.
+
+Rabin-Karp String Search ------ to search for a string p (of length m) in a large string S, we can calculate hash(p) and then check every substring Si...Si+m-1
+				to see if it has the same hash value. Then compare them in the usual way
+			------ the hash value of the length m substring of S that starts at position j is:
+				hash(S, j) = sum(i=0 to m - 1) of {chr(Sj+i) * a ^ (m-i-1)}, a is the alphabet size.
+			------ the next hash value, for the substring that starts at position j+1:
+				hash(S, j+1) = (hash(S, j) - a ^ (m - 1) * chr(Sj)) * a + chr(Sj+m)
+
+Compression ------ remove redundancy, save in terms of memory and time for file sharing.
+		e.g. AAAAABBBB encoded as 5A4B
+		assign characters codes in such a way that common characters have shorter codes
+		use a trie (prefix binary tree)
+
+trie: left branch -0; right branch - 1
+
+Huffman Encoding: choosing the codes to gain a Huffman tree
+		find 2 characters with least frequency, combine them to get a new resulting frequency at a higher node
+		repeatedly find the 2 least frequency nodes, combine them to get a new resulting frequency at a higher node
+		stop when root is meeted.
+
+Lempel-Ziv compression: assign codes not to individual symbols but to sequences of symbols.
+
+Time vs memory trade-off:
+	Decreasing the time required to solve a problem by using additional memory
+	or by Preprocessing
+	
+Horspool's String Search Algorithm: 
+		------ time complexity worst case: O(m*n), average case: O(n)
+		------ inspired by the famour Boyer-Moore algorithm (BM)
+		function FindShift(P[0...m-1])
+			for i <~ 0 to a do  // a is the alphabet size
+				Shift[i] <~ m
+			for j <~ 0 to m - 2 do
+				Shift[P[j]] <~ m - j - 1
+
+		function HORSPOOL(P[0...m-1], T[0...n-1])
+			FindShift(P)
+			i <~ m - 1
+			while i < n do
+				k <~ 0
+				while k < m and P[m - 1 - k] = T[i - k] do
+					k <~ k + 1
+				if k = m then  // we have a match
+					return i - m + 1  // start of the match
+				else
+					i <~ i + Shift[T[i]]  // slide the pattern along
+			return -1
+
+Knuth-Morris-Pratt algorithm (KMP): effective when the alphabet is small
+		------ represent the finite-state automation as a 2-dimensional transition array T,
+		 where T[c][j] is the state to go to upon reading the character c in state j.
+
+		e.g. for 0 and 1
+		T['0'][0] <~ 0
+		T['1'][0] <~ 0
+		x <~ 0
+		j <~ 1
+		while j < m do
+			T['0'][j] <~ T['0'][x]
+			T['1'][j] <~ T['1'][x]
+			T[P[j]][j] <~ j + 1
+			x <~ T[P[j]][x]
+			j <~ j + 1
+
+Polynomial ------ if an algorithm's runtime is bounded by a polynomial O(f(n)) with respect to the size of the input n, where f(n) is a polynomial function
+		tractable
+
+decision problem ------ a question with a yes/no answer
+
+Halting Problem: not solveable problem, thus not a decision problem
+
+P ------ class of decision problems that can be solved/answered in deterministic polynomial time
+
+NP ------ class of decision problems that can be solve/answered in nondeterministic polynomial time
+	------ nondeterministic polynomial algorithms: 
+		Guessing stage: an arbitrary solution S is chosen
+		Verfication stage: verifies the decision problem based on S in polynomial time
+	------ all P are in NP, but is P = NP ?
+	------ pollynomial reduction: problem A is polynomially reducible to problem B if there exists a polynomial transformation of A to B,
+		 such that the solution of B can be converted into a solution for A
+
+NP-hard ------ A is NP-hard if every problem from NP can be reduced to A
+
+NP-complete ------ A is NP-complete if A is both NP-hard and in NP.
+		------ to answer N = NP, we 'just' need to solve one NP-complete problem
+		------ knapsack problem is NP-complete, but dynamic programming method of knapsack problem is not in NP
+
+Turing Machine ------ 	1. infinite tape divided into cells
+			2. fixed set of symbols called the alphabet
+			3. each cell can contain at most one symbol
+			4. a 'head' positioned over the cells of the infinite tap
+			5. the head can read the symbol of its current cell
+			6. the head can write or erase a symbol of its current cell
+			7. a collection of states
+			8. rules for state transitions and moving the head left or right by one position
+
+Nondeterministic turing machine: multiple options for transitioning from one state to another for the same rule
+
+Universal turing machine: a turing machine that simulates other turing machines
+
+Probabilistic algorithms ------ two runs of the algorithm with the same input might result in different outputs
+
+Freivald's Algorithm: 	input: 3 n * n matrices A, B and C
+			output: does A * B = C holds?
+			time complexity only O(n^2)!
+			core: if A * B = C, then it always answers correctly
+			     if A * B != C, then with probability at most 50% it answers incorrectly
+			     Run the algorithm k times, we obtain a 1/2^k probability of a wrong answer for the second case
+
+			generate a random vector V of size n, where each element of the vector is either 0 or 1
+			compute P = A * (B * V) - (C * V)
+			if P = 0, output yes, otherwise no
+
+
+
+
+
+
