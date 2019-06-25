@@ -1,0 +1,1059 @@
+Instance ------ the individual, indepenent examples of a concept
+Attributes ------ meansuring aspects of an instance
+			------	nominal (distinct symbols), ordinal (distinct symbols with 
+					order), continuous (well-defined zero point and no explicit 
+					upper bound)
+Concepts ------ things that we aim to learn generally in the form of labels
+ 				or class
+
+Supervised learning ----- the learner operates with a set of labelled 
+				training data
+
+Unsupervised learning ------ dynamically discover the 'class' in the process
+				of categorising the instances
+
+Classification ------ classification learning, class is ordinal or nomial
+Regression ------ classification learning, but class is continuous
+					(cannot conceivably enumerate all labels, a correct 
+					prediction is when the numeric value is acceptably close to 
+					the real value)
+
+Association Learning ------ detect useful patterns, associations, correlations
+
+Probability: 	P(A) = proportion of successful outcomes out of possible outcomes
+				Prior probability P(A) = the probability of A occuring, 
+				given no additional knowledge about A
+				
+				Conditional (Posterior) probability P(A|B) = the probability 
+				of A occuring, given the occurence of B
+				
+				Independence = A and B are independent iff P(A, B) = P(A)P(B)
+				
+				Conditional independence = A and B are independent, 
+				
+				conditioned on C, iff P((A,B)|C) = P(A|C)P(B|C)
+
+				Bayes' Rule = P(A|B) = P(B|A) * P(A) / P(B)
+
+				Entropy: a measure of unpredictability --- the info required to 
+					predict an event (X is a single attribute)
+						H(X) += -(i=1; i<=n; i++) { P(Xi)*ln(P(Xi)) }
+						0 <= H(X) <= log(n)
+					------ high entropy -> x is unpredictable
+
+
+		Binomial distribution: results from a series of independent trials 
+		with only two outcomes
+
+		Multinomial distribution: results from a series of independent 
+		trials with more than two outcomes
+
+Model ------ tries to capture the component parts & a representation of what 
+			influences what; to produce a mathematical function that 
+			approximates a set of observations.
+
+		Probability model: a mathematical representation of a random event
+						--- a sample space (set of all possible outcomes)
+						--- events (subset of the sameple space)
+						--- a probability distribution over the events
+						tries to choose a probability distribution which 
+						maximizes the likelihood of observing the given 
+						sample
+
+Naive Bayes ------ a probabilistic learner based on a conditional 
+					independence assumption:
+						all attributes are independent to each other ->
+						[C]P(X1, X2, ... Xn|Cj) == P(X1|Cj) * ... * P(Xn|Cj)
+					
+					Hence to classify an instance T = <X1, X2,...,Xn> 
+					according to one of the class Cj in C ---
+						c = arg max P(Cj) * [C]
+
+	# to solve a problem that if any P(Xi|Cj) == 0, then the final vlaue is 0
+			Probabilistic Smoothing:
+				notion ------ no event is impossible
+
+				Approaches --- Eclipse smoothing, laplace smoothing, add-k 
+					smoothing, good-turing estimation, regression
+						
+				Epsilon smoothing: replace 0 with a trivially small non-zero 
+					number e; assuming 1 + e = 1
+
+					Merits: easy to implement; reasonably accurate
+
+					Demerits: systematically over-estimate the likelihood of 
+						unseen events; creating BIAS in certain circumstances
+
+				add-k smoothing: unseen events get a count of 1; all events 
+					are increased to ensure that monotonicity is maintained, so 
+					for |V| different attributes vlaues for attribute X:
+
+						P(Xi|Cj) = (1 + freq(Xi, Cj)) / (|V| + freq(Cj))
+
+	# ignore features with missing values in test instance, but ignore only 
+		missing values in training instance.
+
+	merits: scales easily for large number of dimensions and data size;
+			easy to explain; simple to build; fast to make decisions
+
+Classification Evaluation ------ 
+		evaluation metric: quantify how frequently the classifier is correct
+			Accuracy = Number of correctly labelled test instance / total
+
+
+		# Inductive BIAS
+			Inductive Learning Hypothesis (ILH): any hypothesis found to 
+				approximate the target function well over (a sufficiently 
+				large) training data set will also approximate the target 
+				function well over unseen held-out test examples
+
+			Inductive BIAS --- different assumptions will 
+				lead to different predictions
+
+		# how to split the data
+			1. Holdout evaluation strategy --- each instance is randomly
+			 assigned as either a training instance or testing instance
+				
+				Merits: simple to work with and implement; high 
+					reproducibility; 
+				
+					more training data -> less model variance, more 
+										evaluation variance
+
+					less training data -> more model variance, less 
+										evaluation variance
+
+				Demerits: size of split affect behaviour
+					lots test, few train -> inaccurate model
+					few test, lots train -> test data is not representative
+
+			2.Repeated Random Subsampling --- like holdout, but iterated 
+				multiple times
+
+				Merits: averaging holdout method to produce more reliable 
+					results; less variance than holdout
+
+				Demerits: more difficult; slower than holdout; wrong choice 
+					of training set-test set size can still lead to highly 
+					misleading results
+
+			3. Cross-Validation --- data is progressively split into a 
+				number of parittions m (>=2), one partition as test data, others as training data, repeat this m times
+
+				Merits: very reproducible; minize BIAS and VARIANCE
+				
+			4. stratification: we assume the class distribution of unseen 
+			instances will be the same as distribution of seen instances 
+			(which of course is not realistic)
+
+				Merits: less model bias
+
+		A classifier may classifies a class as TP, FN, FP, TN
+							Predicted
+							I 		U
+				Acutal	I   TP		FN
+						U   FP		TN
+
+		Classification accuracy ACC = (TP+TN) / (TP+FP+FN+TN)
+
+		Error Rate ER = 1 - ACC
+
+		Error Rate Reduction ERR = (ER0 - ER) / ER0 
+					(ER0 is ER for an alternative method)
+
+		Precision --- how often are we correct, when we predict that an 
+			instnace is interesting?
+			
+			Precision = TP / (TP+FP)
+
+		Recall --- what proportion of the truly interesting instances have 
+			we correctly identified as interesting?
+
+			Recall = TP / (TP + FN)
+
+		F-score --- a metric that evaluates Precision and Recall
+			F(x) = (1 + x^2)*P*R / (x^2*P) + R
+
+		Overfitting --- classifier tuned itself to the idiosyncracies of the 
+			training data rather than learning its generalisable properties
+
+		Consistency --- ability to flawlessly predict the class of all 
+			training instances
+
+		Generalisation --- how well does the classifier generalise from the 
+			specificcs of the training examples to predict the target function
+
+		learning curve --- train & test accuracy vs k graph
+
+		Bias --- model bias (systematically wrong predictions),
+			 --- evaluation bias (evaluation strategy to over/under estimate 
+			 		the effectivenss of our classifier)
+			 --- sampling bias (training or evaluating dataset isn't 
+			 		representative of the population, effectively, breaking 
+			 		the ILH)
+
+
+		Variance --- model variance, evaluation variance
+
+
+		# in multi-class problem, assume an interesting class I and several 
+			unintersting classes U1, U2, ...
+
+			To form a Confusion Matrix
+
+			Now, there are 3 methods to find precision and accuracy
+
+			Macro-averaging: calculate P, R per class and then take mean
+
+			Micro-averaging: combine all test instances into a single pool
+
+			Weighted-averaging: calculate P, R per class and then take 
+			weighted mean, based on the proportion of instances in that class
+
+Result comparison ------ Baseline, Benchmark
+		Baseline = naive method which is expected to be out-performed by 
+			any reasonably well-developed method
+
+			--- useful in establishing a baseline for models
+
+			--- useful in getting a sense for the intrinsic difficulty of a 
+				given task
+
+			--- 0-R, 1-R
+
+		Benchmark = established rival technique which we are pitching our 
+			method against
+
+Decision Tree ------ construct decision trees in recursive 
+				divide-and-conquer fashion
+
+			--- Evaluation: compare the entropy before splitting the 
+				tree using the attr's values and the weighted average of 
+				the entropy over the children after the split (mutual info)
+
+			low entropy -> better tree
+
+			Mean Info(X1, X2,...,Xm attrs) = (i=1; i<=m;i++) { P(Xi)H(Xi) }
+
+			Information Gain (IG(Ra|R)) = H(R) - Mean Info(Ra, R)
+				------ Ra is an attribute which partitions the instances at 
+					a given root node R
+
+			# problem with IG: tends to prefer highly-branching attrs, may 
+					result in overfitting
+
+			# solution: 
+				replace IG with GR
+
+				Gain Ratio (GR) --- reduces the biase for information gain 
+				towards highly-branching attrs by normalising relative to 
+				the split infomation
+
+				Split info (SI) --- entropy of a gvien split
+
+				GR(Ra|R) = IG(Ra|R) / SI(Ra|R) = IG(Ra|R) / H(Ra)
+
+			merits: highly regarded among basic supervised learner;
+					fast to train, fast to classify;
+
+			Demerits: susceptible to the effects of irrelevant features;
+					some quirks to account for missing feature values;
+
+Instance-based Learning (IBL) ------ supervised learning algorithms which 
+			maps instances to categories
+
+			Venn Diagram --- a diagram of A, B circles with overlapping area
+
+			To calculate similarity of A and B:
+				
+				1. Jaccard Similarity --- |A & B| / |A or B|
+
+				2. Dice Coefficient --- 2|A & B| / (|A| + |B|)
+
+				3. Use distance matrix to measure the similarity:
+			
+					Feature vector = an n-dimensional vector of features 
+						that represent some object
+
+					Euclidean distance: 
+						d(A, B) = sqrt[(ai - bi)^2 for i < n]
+
+					Manhattan distance: d(A, B) = |ai-bi| for i < n
+
+					Cosine Similarity: 
+						cos(A, B) = a*b/|a||b| (a, b are vectors)
+
+			Nearest Neighbour classification:
+				find k closest point to the target instance through voting 
+				to determine its class
+
+				--- 1-NN, k-NN, weighted K-NN, offset-weighted K-NN
+
+				--- weighting strategies: 
+					1. give each neighbour equal weight
+
+					2. weight the vote of each instance by its inverse 
+						linear distance from the test instance (ILD):
+							Wj = (dj != d1) ? (dk-dj)/(dk-d1) : 1
+							(d1 = nearest neighbor; dk = furthest neighbor;
+							 dj = test instance)
+
+					3. weight the vote of each instance by its inverse 
+						distance from the test instance (ID):
+							Wj = 1 / (dj + e) (e is given constant)
+
+				if there's a tie: 
+					1. randomly tie breaking 
+					2. take class with highest prior probability 
+					3. see if the addition of the k+1th instances breaks 
+					the tie
+
+				--- small k -> low performance due to noise (overfitting)
+				--- large k -> drive classifier towards 0-R performance
+				--- trial and error is the only way of getting k just right
+
+				Merits: simple; handle arbitrarily many classes; incremental
+
+				Demerits: requires a good distance function; requires an 
+					averaging function for combining the labels of multiple 
+					training examples; expensive; lazy; prone to bias; 
+					arbitrary k value
+
+			Nearest Prototype classification:
+				calculate the centroid of each class, and classify each 
+				test instance according to the class of the centroid it is 
+				nearest to
+
+				The centroid is calculated simply by averaging the numeric 
+				values along each axis
+
+			Support Vector Machine (SVM):
+				a non-probabilisti binary linear classifier which contains:
+
+					(1) a hyperplane-based classifie for two-class 
+						classification problem
+
+					(2) the particular hyperplane it selects is the maximum 
+						margin hyperplane
+
+					(3) a soft margins allow some data points to violate the 
+						separating hyperplane
+
+					(4) a kernel function can be used to allow the SVM to 
+						transform a non-linear separatable boundary between 
+						two classes to a linearly separatable boundary
+
+					--- a linear classifier has the form:
+							f(x) = (w^T)*x + b
+							(w and x are vectors)
+
+				# there are many decision boundaries, so how to choose the 
+					best of them
+
+				# solution: maximize the distance between the hyper plane 
+					and the 'difficult points' close to decision boundary
+
+				--- SVMs are inherently two-class classifiers
+
+				--- methods to adapt to multiple classes:
+					1. one-vs-all classification and find the best margin
+					2. one-vs-one classification and choose class selected 
+					by most classifier
+
+				Merits: high-accuracy margin classifier; appliable to 
+				non-linearly-separable data with appropriate kernel function
+
+				Demerits: very slow
+
+Nominal attrs, numeric learner: 
+	for classifiers like K-NN, NP, SVM, we can:
+	
+		1. fall back to Hamming distance: d(A, B) = (ai == bi) ? 0 : 1
+
+		2. randomly assign numbers to attr values
+			--- good for constant scale between attrs
+			--- bad with high-arity attrs
+			--- imposes an attr ordering which may not exist
+
+		3. one-hot encoding: 
+			replace m values in a nominal attr with m boolean attrs
+			
+			NOTICE HERE 1 attr -> m attrs
+
+Numeric attrs, nominal learner:
+	for NB:
+		MultivariateNB: attrs are nominal
+
+		BernoulliNB: attrs are binary (special case of MV)
+
+		MultinomialNB: attrs are natural numbers (usually refer to freq)
+
+		GaussianNB: attrs are real numbers (use probability density function 
+					instead of probability mass function)
+
+	for DT:
+		1. binarisation: each node is labelled with ak with two branches
+			(1) ak <= m (2) ak > m
+
+			IG must be calculated for each non-trivial split point
+
+		2. Discretisation --- trnaslation of continuous attrs onto nominal
+		
+			1. Naive Unsupervised Discretisation:
+
+				Merits: simple to implement
+			
+				Demerits: loss of generality; no sense of "numeric 
+						proximity"/ordering; only describes the training data (
+						overfitting)
+
+			2. equal width: identify the upper and lower bounds and 
+					partition the overall space into n equal intervals
+
+				Merits: simple
+
+				Demerits: badly effected by outliers; arbitrary n
+
+			3. equal frequency: sort the values, and identify breakpoints 
+					which produce n equal-sized partitions
+
+				Merits: simple
+
+				Demerits: arbitrary n
+
+			4. k-mean clustering: select k points at random; assign each 
+					instance to the cluster with nearest centroid; compute seed 
+					points as new centroids; go back to step 2, until the 
+					assignment is stable
+
+				Merits: ?
+
+				Demerits: relatively slow; random behaviour; sensitive to 
+					outliers; arbitrary k
+
+			5. Naive Supervised Discretisation: group values into 
+					class-contiguous interval
+
+				(1) sort the values, ientify breakpoints in class membership
+				(2) reposition any breakpoints where there is no change in 
+					numeric value
+
+				Merits: simple 
+				Demerits: creates too many categories (overfitting)
+
+				# modify procedure to avoid overfitting:
+					new (1) delay inserting a breakpoint until each cluster 
+						contains at least n instances
+
+					new (2) merge neighbouring clusters until they reach a 
+						certain size/at least n instances of a single class
+
+Feature Selection ------ choose attrs suitable for classifying the data according
+							to the attrs
+
+		1. "Wrapper" methods: choose subset of attrs that gives best performance 
+			on the development data with respect to a single learner
+
+			best performance on data set -> best feature set
+
+			Merits: feature set with optimal performance on development data
+
+			Demerits: extremely time-consuming
+
+			# modify methods to reduce cost in time
+
+				(1) greedy approach: 
+						train and evaluate model on each single attr
+						choose best attr
+						until converge:
+								train and evaluate model on best attrs, plus each 
+								remaining single attr
+								choose best attr out of the remaining set
+						iterates until performance stops increasing
+
+				(2) Ablation approach:
+						start with all attrs
+						remove 1 attr, train and evaluate model
+						until divergence:
+								From remaining attrs, remove each attr, train 
+								and evaluate model
+								remove attr that cases least performance 
+								degredation
+
+		2. "Embedded" methods: some models perform feature selection as part of 
+								the algorithm
+				e.g. linear classifier, SVMs, Logistic Regression, DT
+
+
+# different approaches other than feature selection
+
+Feature filtering: possible to evaluate "goodness" of each attr distinctively
+		a single feature is good if:
+				it is well correlated with interesting class
+				it is reversely correlated with interesting class
+				it is well correlated (reversely correlated) with uninterseting 
+					class
+
+		1.Pointwise mutual information:
+				if attr A is independent of class C -> P(A, C)/P(A)P(C) = 1
+				--- LHS >> 1, attr and class are likely to be correlated
+				--- LHS << 1, attr and class are likely to be negatively 
+					correlated
+
+				PMI(A=a, C=c) = log(p(a, c) / P(a)P(c))
+
+				attrs with greatest PMI: best attrs
+
+		2. Mutual information for detecting correlation with uninteresting class
+				
+				Contingency tables:
+
+						a 				not a 				Total
+				c 		sum(a, c)		sum(not a, c)		sum(c)
+				not c 	sum(a, not c)	sum(not a, not c)	sum(not c)
+				total 	sum(a)			sum(not a)			N
+
+				P(a, c) = sum(a, c)/N
+
+				MI(A, C) = P(i, j)log(P(i, j) / P(i)P(j)) for (i in A, j in C)
+
+				Demerits: biased towards common, uninformative features (because 
+				it uses log)
+
+		3. Chi-square: similar to MI
+
+				rewrite Contingency tables:
+
+						a 				not a 				Total
+				c 		W				X					W+X
+				not c 	Y				Z					Y+Z
+				total 	W+Y				X+Z				N = W+X+Y+Z
+
+				if a, c independent -> P(a, c) = P(a)P(c)
+					sum(a, c) = sum(a)sum(c)/N
+					E(W) = (W+Y)(W+X)/(W+X+Y+Z)
+
+				Compare the value we actually observed O(W) with the expected 
+					value E(W):
+						if O(W) >> E(W) or << E(W) -> correlated
+
+				Actual calculation of Chi-square:
+				X^2 = (O(i, j) - E(i, j)) ^ 2 / E(i, j) for (i in r, j in c)
+
+				Demerits: biased toward rare, informative features (because of 
+				squaring the difference)
+
+		With nominal attrs:
+			1. treat as multiple binary attrs(one-hot encoding)
+			2. modify contigency tables
+
+		With continuous attrs:
+			1. probabilities can be estimated by fitting a Gaussian
+			2. Discretization
+
+		With Ordinal attrs:
+			1. treat as binary
+			2. treat as continuous
+			3. treat as nominal
+
+		Now Consider multi-class problem:
+				what makes a feature bad? 
+					irrelevant
+					correlated with other features
+					good at only predicting one class (not sure)
+
+				calculate PMI, MI, Chi-square per-class
+
+
+Regression ------ important type of ML prolbem where the output is continuous
+				continuous attr -> continuous class
+
+				assuming a linear relationship between the k attr values ai and 
+				the numeric output c:
+						c = w0 + (wi*ai) for { i = 1 and i <= k }
+
+		Linear Regression: captures a relationship between two attrs
+				assuming that there is a linear relationship between two attrs
+				
+				derive a linear model by estimating it from training samples
+					given examples (x1, y1),...(xn, yn), we determine the optimal
+						P0, p1,...pd with y = p * x
+				
+				# So how to determine the optimal p?
+					by choosing a line that minimizes the sum of the square of 
+					the distance between estimated yi and actual yi
+						Minimise the Residual Sum of Square (RSS
+							RSS(p) = (yi - p * xi) ^ 2 for { i in n }
+							p = arg min RSS(p; {X,Y})
+
+					Hence, we use gradient descent to find the best p
+
+					-> p(i+1) = p(i) + 2 * alpha * RSS(p(i), {X, Y})
+
+					alpha is learning rate (how big a step you take in 
+					updating theta)
+
+					small alpha -> slow algorithm
+
+					large alpha -> miss the minimum
+
+				# cannot be used to evaluate in the same mammer as classification
+					1. true positive matches are an unreasonable expectation
+					2. it makes use of "ordering" and "scale" which may not 
+						exist in classification tasks
+
+				To evaluate:
+					1. Mean squared error: 1/N * [(yi-p*xi)^2 for i in n]
+
+					2. Root mean-squared error: sqrt((yi-p*xi)^2{ for i in n }/N)
+
+					3. Root relative squared error: 
+					   sqrt((yi-p*xi)^2 for i in N / (p*xi - ymean)^2 for i in N)
+
+					4. Pearson's correlation
+
+
+		Logistic Regression: continuous class, but discrete learner
+				tries to capture a relationship between attrs and probability
+						P(c=Y|x) = p*x
+
+						better version to make sure P in range [0, 1]
+						-> log(P) = p * x
+
+						logit(P) = log (P / (1-P))
+
+						Logistic function: P(c|x) = 1 / (1 + e ^ (-p*x))
+
+				# how to determine p?
+					Gradient Descent & an error function
+
+				Merits: vast improvement on NB; suit to frequency-based 
+						features
+
+				Demerits: slow; feature scaling issues; need a lot of data; 
+						overfitting
+
+Classification Combination (ensemble learning) ------ constructs a set of 
+			base classifiers from a given set of training data and aggregates 
+			the outputs into a single meta-classifier
+
+			Approaches: instance manipulation, feature manipulation, class 
+				label manipulation, algorithm manipulation
+
+			1. Voting: run multiple base classifiers over the test data, 
+				select the class predicted by the most base classifiers
+
+			2. Stacking: train a classifier over the outputs of the base 
+				classifiers (meta-classification)
+
+				intuition: smooth errors over a range of algorithms with 
+					different bias
+
+					Generally result in as good or better results than the 
+					best of the base classifiers
+
+			3. Bagging: construct "novel" datasets through a combination of 
+				random sampling and replacement
+
+				intuition: the more data, the lower the variance
+
+					Highly effect over noisy datasets
+					performance is generally significantly better than the 
+					base classifiers and only occasionally substantially worse
+
+			4. Random Forest: an ensemble of random trees
+				random tree: a decision tree where at each node, only some 
+					of the possible attrs are considered
+
+				intuition: control for unhelpful attrs in the feature set to 
+					minize overall model variance, without combined model bias
+					
+					strong performance
+					robust to overfitting
+
+			5. Boosting: iterativley change the distribution and weights of 
+				training instances to reflect the performance of the 
+				classifier on the previous iteration
+
+				intuition: tune base classifiers to focus on the "hard to 
+					classify" instances
+
+					guaranteed performance in the form of error bounds over 
+						the training data
+					prone to overfit
+					minize bias
+
+Clustering ------ unsupervised learning
+	basic contrast:
+			exclusive vs overlapping clustering
+			deterministic vs probabilistic clustering
+			hierarchical vs partitioning clustering
+			incremental vs batch clustering
+
+	k-mean clustering: implementation with Lloyd's algorithm
+
+	soft k-mean clustering: probabilistic version of k-means with a softmax 
+		function, where each instance is probabilistically assigned to each 
+		of the k clusters
+
+	finite mixture: a mixed distribution with k components distributions
+			used to model the distribution of attr-value pairs in each cluster
+
+	Expectation Maximisation algorithm (EM): quasi-Newton parameter 
+		estimation method with guaranteed "positive" hill-climbing 
+		characterstic relative to the gradient of log-likelihood
+
+		intuition: generalisation of k-means:
+			Expectation step: 
+				based on the current estimate of the parameters On, calculate the expected log-likelihood
+
+			Maximisation step:
+				compute the new parameter distribution On+1 from On, that 
+				maximises the log-likelihood
+
+		Merits: positive hill climibing behaviour; fast to converge;
+				result in probabilistic cluster assignment; powerful
+
+		Demerits: getting stuck in a local maximum; arbitrary k; overfitting
+
+	Cluster evaluation:
+		Unsupervised evaluation: how cohesive are individual clusters/ 
+			separate is one cluster from other clusters
+
+			cluster cohesion: instances in a given cluster should be closely 
+				related to each other
+					cohesion(Ci) = 1 / proximity(x, y) for { x, y in Ci }
+
+			cluster separation: instances in different clusters should be 
+				distinct from each other
+				
+				separation(Ci, Cj) = proximity(x, y) for { x in Ci, y in Cj }
+
+			one proximity is --- sum of squared errors
+
+					SSE (k-mean) = proximity(x, Ci)^2 for { i in k, x in Ci }
+
+			graph-based cohesion
+
+			Prototype-based separation
+
+			Graph-based separation ad cohesion
+
+			etc.
+
+		Supervised evaluation: measures the degree to which predicted class 
+			labels match the actual class labels
+
+			purity = |Ci|/N * max(Pi(j)) for { i in k }
+
+			entropy = |Ci|/N * H(xi) for { i in k }
+
+Semi-supervised Learning ------ learning from both labelled & unlabelled data
+		semi-supervised classification: 
+
+			1. self training (boostrapping): 
+				L = labelled data, U = unlabelled data
+				Repeat:
+					train fi from L using supervized learning
+					apply fi to U using supervised learning (predict)
+					identify a subset U' of U where fi(xj) is confident
+					U <- U \ U'
+				L <- L and U s.t. U' = {(xj, fi(xj))}
+				Until L is unchanged from one iteration to the next
+
+Active learning ------ a classifier can achieve higher accuracy with fewer 
+					training instances if it is allowed to have some say in 
+					the selection of training instances
+
+			assuming that labelling is a finite resource, which should be 
+			expected in a way which optimises machine learning effectiveness
+
+			pose queries (unlabelled instances) for labelling by an oracle (
+			human annotator)
+
+			Query strategies:
+			1. query those instances the classifier is least confident of the 
+				classification for: 
+					x* = arg max(1 - P(y'|x)) where y' = arg max P(y|x)
+
+			2. performe "margin sampling":
+					x* = arg min P(y'1|x) - P(y'2|x) where y'1 and y'2 are 
+					the first and second most probable label predictions for x
+
+				or use entropy as an uncertainty measure:
+					x* = arg max[-(P(yi|x)log(P(yi|x)) for{ i in y })]
+
+			3. query-by-committee (QBC): a suite of classifiers is trained 
+				over a fixed training set L, and the instance where there is 
+				the highest disagreement is selected for querying
+
+				assuming that it is possible to generate a suite of 
+					heterogeneous base classifiers
+
+				determination of relative disagreement can again occur via
+				 entropy, or alternatively via one-vs-rest relative entropy
+
+			# active learning must be handled with some care:
+				querying is inherently biased towards a particular class set 
+				and learning approaches, which may limit the general utility 
+				of the resulting dataset
+				highly reliant on "clean" labelling
+
+Error analysis ------ why is it that a given model has misclassified an 
+						instance in the way it has
+
+		strategies:
+
+			1. confusion matrix
+			2. a random subsample of a misclassified instances
+
+
+Model interpretability ------ why is it that a given model has classified an 
+							instance in the way it has
+
+		Hyperparameters of a model: parameters which define/bias/constrain 
+									the learning process
+
+		Parameter of a classifier: what is learned when a given learner with 
+							a given set of hyperparameters is applied to a 
+							particular training dataset, and is then used to 
+							classify test instances
+
+Visualising data: 
+		dimensionality reduction:
+			1. PCA: reduce the dimensionality of a data set consisting of a 
+				large number of interrelated variables, while retaining as 
+				much as possible of the variation present in the data set
+
+			2. Kernel PCA
+
+			3. t-distributed stochastic neighbor embedding
+
+Deep learning ------ combination of "deep" models (multiple hidden layers) with 
+		sufficient data to train the model
+
+		at the heart of deep learning are neural networks, which are composed 
+		of neurons
+
+		one key fact of deep learning is representation learning
+
+		Neuron:
+				input = a vector xi of numeric inputs (xi1,xi2,xi3...xin)
+				
+				output = a scalar ai
+				
+				hyper-parameter = an activation function f
+				
+				parameter: 
+						a vector of weights w = (b, w1, w2,..., wn)
+						(one for each input plus a bias term)
+
+				=> ai = f(w*xi + b)
+
+		common activation functions:
+				logistic sigmoid: f(x) = 1 / (1+e^-x)
+
+				hyperbolic tan (tanh): f(x) = (e^2x - 1) / (e^2x + 1)
+
+				rectified linear unit (ReLU): f(x) = max(0, x)
+
+
+		methods:
+			perceptron: a single-neuron neural network
+				in case of a binary classifier, with the activation function
+				f(w*xi + b) = (w*xi+b >= 0) ? 1 : 0
+
+				# to train a neural network entails identifying the weights w which minise the errors on the training data
+
+					one method is by perceptron algorithm, within which each iteration is termed an epoch
+
+				proceduce:
+
+					let D = {(xi, yi)| i = 1, 2,..., N} be the set of training 
+					instances, lambda = learning rate
+
+					Initialise the weight vector w randomly
+
+					repeat
+						for each training instance (xi, yi) in D do
+							compute yi' = f(w*xi+b)
+							for each weight wj in xi do
+								update wj <- wj + lambda*(yi - yi')*xij
+							end for
+						end for
+					until stopping condition is met
+
+				perception is guaranteed to converge for linearly-separable 
+				data, but no guarantee of convergence over non-linearly 
+				separable data
+
+			multi-layer perceptrons (MLP):
+				stacking neurons: the power of neural nets comes from stacking 
+						multiple neurons in different ways
+						(1) layers of neurons of varying sizes
+						(2) feeding layers into hidden layers of varying sizes
+
+				1. fully-conncected feed-forward neural network with at least 
+					one hidden layer:
+
+					input layer: individual features
+
+					each hidden layer: an arbitrary number of neurons, each of 
+						which is connected to all neurons in the preceding 
+						layer, and all neurons in the following layer
+
+					output layer: combines the inputs from the preceding layer 
+						into output
+
+						two class classifcation: one neuron, with step 
+						function, as before
+
+						multi-class classification: multiple perceptrons, with 
+						softmax; and one perceptron with multiple output neurons
+
+						regression: identity function; sigmoid or tanh
+
+		universal approximation theorem: a feed-forward neural network with a 
+		single hidden layer (finite neurons) is able to approximate any 
+		continuous function on n dimensions
+
+
+		# so how to train a neural net (NN) with hidden layers?
+			1. back propagtion: compute errors at the output layer with respect 
+				to each weight using partial differentation; then propagate 
+				those errors back to each of the input layers (simple gradient 
+				descent)
+
+			 	objective functions like mean-squared error (MSE):
+					MSE(y, y') = 1/n * (yi-yi')^2 for all i
+
+				or, residual squared error (RSS):
+					RSS(y, y') = (yi-yi'^2) for all i
+
+		# why are neural nets prone to chronic overfitting ?
+			beause the large number of parameters means that regularisation is 
+			critical 
+
+			common approaches to avoid this:
+				1. L1/L2 regularisation over weights
+				2. early stopping --- stop training when performance plateaus 
+									on the dev data
+				3. dropout --- randomly drop out a certain proportion of units 
+							for each instance based on a fixed drop out rate
+
+		# theoretical properties of neural networks
+			applicable to either classification or regression problems
+
+			relies on continuous features
+
+			assuming at least one hidden layer, can model arbitrary basic 
+			functions
+
+			arbitrarily complex to train, but produces relatively compact models
+
+		# practical properties of neural networks
+			slow training time
+			
+			feature engineering less critical
+			
+			chronically overfit when trained over small datasets
+			
+			contains a number of random variables
+
+			hard to interpret a trained neural net model
+
+		Merits: huge impact on vision and speech recognition tasks; possible to 
+			model much larger contexts than conventional models, due to 
+			representation learning/generalisation; easy to combine different 
+			input modalities; easy to play around with using high-level libraries; lots of demand for machine learning skills
+
+		Demerits: any saving in terms of feature engineering are outweighed by 
+			costs in terms of architecture engineering; expensive to train over 
+			large datasets; reproducibility can be very low; overblown claims 
+			about the capabilities of deep learning
+
+Representational learning ------ the transformation of raw inputs into a 
+						representation that is more amenable to machine learning
+
+		embedding: at each layer of the model, it is possible to extract out a 
+				dense real-valued vector representation of a test instance
+
+			each dimension of the embedding corresponds to:
+				the model has learned a generalise-able property
+				sometimes the property has an interpretation
+
+			The advantage of the embedding is three-fold:
+				fewer features = fast training/prediction
+
+				feature engineering is easy
+
+				we can represent an instance by embedding with a careful choice 
+				of representation, allowing us to use the trained network for 
+				problems it wasn't designed for
+
+		1. work2vec --- for each word in a corpus, we attempt to predict it 
+			from its context words wi-c, wi-c+1,...,wi+c
+
+			it is framed as a classification task, with negative instances 
+			synthetically genearted through negative sampling, by randomly 
+			selecting words from the vocabulary V
+
+			the model used to learn the word embeddings is a simple 
+			feed-forward neural network, using logistic regression as the 
+			objective function
+
+		2. Convolutional neural networks (convnets) --- neural networks made 
+			up of the following layers:
+
+				convolutional layers
+				max pooling layers
+				fully-connected layers
+
+				ReLU is often used as the activation function, as it
+					(a) fast to differentiate 
+					(b) tends to avoid the "vanishing gradient" problem
+
+
+				Convolution layrs:
+					(1) a kernel, in the form of a matrix which is overlaid on 
+						different sub-regions of the image, and combined 
+						through an element-wise product
+
+					(2) a stride s in Z dimension which defines how many 
+						positions in the image to advance the kernel on each 
+						iteration
+
+				Pooling layers:
+					(1) a kernel, in the form of a matrix which is overlaid on 
+						different sub-regions of the image to determine the 
+						extent of the pool
+
+					(2) a stride s which defnes how many postions in the image
+					 	to advance the kernel on each iteration
+
+					(3) the pooling basis: either max or average
+
+
+structured classification:
+
+	# in many tasks, there is "structure" between instances, e.g.
+		sequential structure, hierarchical structure, graph structure
+
+		hence, we need structured classification --- which are able to capture 
+			the interaction between instaces
+
+
+	Markov Chain --- a finite state automaton (FSA) of the form u = (A, n) over 
+		a set S = {si} of states, where:
+
+		A = transition probability matrix
+		n = the initial state distribution
+
+		assuming a state qi only depends on the immediately preceding state:
+				P(qi|q1...qi-1) = P(qi|qi-1)
+
+	Hidden Markov Models (HMMs) take the form u = (A, B, n) over S and O 
+		observations:
+			A = transition probability matrix
+			B = output probability matrix
+			n = the initial state distribution
