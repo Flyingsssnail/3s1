@@ -1,0 +1,253 @@
+Git commands:
+	$ git clone https://github.com/libgit2/libgit2
+	$ git add *.c
+	$ git add LICENSE
+	$ git commit -m 'initial project version'
+	$ git init
+	$ git status
+	$ git clone
+	$ git add <file>
+	$ git add -A
+	$ git add *. <extension>
+	$ git commit -m "<message>"
+	$ git log
+	$ git checkout <commit_id>
+	$ git revert -no-commit <id>	//reverts to that commit
+	$ git diff
+	$ git branch
+	$ git checkout -b <branch>
+	$ git merge <branch>
+	$ git branch -d <branch>
+
+How does a webpage work ?
+	A: HTML defines its structure, CSS determines its presentation and
+		JavaScript describes its behaviour
+
+What is DOM ?
+	A: DOM is acronym for Document Object Model, it is what the browswer
+		exposes to the JavaScript runtime to allow JavaScript code to 
+		manipulate the page (querySelector)
+
+What is Node ?
+	A: a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js
+		uses an event-driven, non-blocking I/O model that makes it 
+		lightweight and efficient
+
+What is npm ?
+	A: a package manager for Node.js packages, or other modules
+		it's public registry, centralised, accesible via the cmd and easy to 
+		share code
+
+		npm install <package>
+		var <varname> = require("package");
+		npm init
+
+		module.exports = xxx
+
+		fs: file system
+		net: TCP clients and server
+		http & https: basic web server
+		dns: domain name resolution
+		assert: writing tests
+		os: querying the operating system
+
+What is express ?
+	A: A web development framework for node.js
+		streamlined Node, server methods, routing, easy APIs, middleware 
+		friendly
+
+		var app = express();
+		// routes
+		app.get('/', function (req, res) {});
+
+What is an API ?
+	A: API stands for Application Programming Interface which provides 
+	universal access to whatever assets you choose to share
+
+What is REST ?
+	A: REpresentational State Transfer is an architectual style for 
+		providing standards between computer systes on the web, making 
+		it easier for systems to communicate with each other 
+		(diff client and server)
+
+What is HTTP ?
+	A: Hyper Text Transfer Protocol used by the World Wide Web and this 
+		protocol defines how messages are formatted and transmitted
+		(between client and server)
+
+		Methods: post, get, put, delete, connnect, head, options
+
+		http request:
+		Get <address> HTTP?1.1 (http version)
+		Host: www.website.com (host address)
+		User-Agent: Mozilla/5.0 (browser)
+		connection: keep-alive
+		Accept: text/html (format the browser supports)
+		If-None-Match: b2arb0a1r6a (version of file on cache)
+
+		http response:
+		HTTP/1.1 200 OK (protocol version & status code)
+		Content-Length: 42194 (size of the data)
+		Server: Apache
+		Content-Type: text/html
+		Date: Fri, 20 Jan 2017
+		Etag: ec30d209
+
+What is mongodb ?
+	A: a document-based database mangement tool that stores JSON-like data
+		(CRUD: create, read, update, delete)
+
+What is mongoose ?
+	A: mongoose is a MongoDB object modeling tool. It provides a 
+	schema-based solution to model your database
+
+What is HTML ?
+	A: Hyper Text Markup Language
+		<b></b> visual emphasis
+		<i></i> alternative voice
+		<u></u> non-textual annotation
+		<s></s> incorrect
+
+What is CSS ?
+	A: Cascading style Sheet
+
+what is XMLHttpRequest(XHR) ? 
+	A: XMLHttpRequest is an API in the form of an object whose 
+	methods transfer data between a web browser and a web server
+
+How to define a schema ?
+	A:
+	var Schema = mongoose.Schema;
+	var student = new Schema ({
+		id: string,
+		name: string
+	});
+
+What is usability ?
+	A: a quality attribute that assess how easy user interfaces are to use
+		Learnability: how easy is it for users to accomplish basic tasks the 
+			first time they encounter the design
+
+		Efficieny: once users have learned the design, how quickly can they 
+			perform tasks
+
+		Memorability: when users return to the design after a period of not 
+			using it, how easily can they reestablish proficiency
+
+		Errors: how many errors do users make, how severe are these errors, 
+			and how easily can they recover from the errors
+
+		Satisfaction: how pleasant is it to use the design
+
+What are forms ?
+	A: keep fields to a minimum; informative and visible labels;
+		easy to tap fields; field size matching expected input;
+		specific error messages; clearly mark what is optional; no reset;
+
+What are dark patterns ?
+	A: disguised ads; forced continuity; friend spam; hidden cost; 
+		trick questions; misdirection; 
+
+What is responsive design ?
+	A: design our webiste so that it can fit to most of the screen size
+		DIP (device-independent pixels)
+		= RES (hardware resolution) / DPR (device pixel ratio)
+
+		Column drop; mostly fluid; layout shift; off canvas
+
+		# use CSS Grid
+			grid-template-columns
+			grid-template-rows
+			grid-template-areas
+
+Why would we use OOP rather than JS ?
+	A: Encapsulation, inheritance and polymorphism
+
+What are the security principles ?
+	A:	1) expect the worst
+		2) least privilege
+		3) simple is more secure
+		4) defense in depth
+		5) no security in obscurity
+		6) fail security
+
+What are the possible attacks ?
+	A: confidentiality attacks; integrity attacks; availability attacks;
+		authenticity attacks; injection attacks; URL manipulation;
+		cross-site scripting; cross-site request forgery; cookie theft;
+
+What is MD5 ?
+	A: MD5 is the most widely known hashing function
+
+What is trigger ?
+	A: an event that provides noticeble signs for the group that risk may 
+		actually be happening
+
+What is contigency plan ?
+	A: what to do in the event of the risk actually happening
+
+How to manage risk ?
+	A: prevention; detection; response; recovery and remediation
+
+How does basic testing work ?
+	Write tests-> run tests-check for fails -> 
+	implement functionality -> run tests -> repeat
+
+Why should we test our web-application ?
+	A:
+	Error-free --- contain no bugs
+	Predictable --- when we execute a functionality, the outcomes
+					are as we intended to be, not only the first
+					time but always
+	Resilient to changes --- be able to handle changes to functionality
+
+How to test ?
+	A: test-driven development (TDD) or Behaviour-driven development (BDD)
+
+What is Mocha ?
+	A: Mocha is a test framework running on Node.js and in the browswer
+	We use Mocha for testing software functionality written in JavaScript
+	We write our own test cases and run the tests with Mocha to identify
+	potential flaws in our web applications
+
+What is chai ?
+	A: an assertion library that can be paird with any test framework.
+		A JavaScript framework commonly used together for unit testing
+
+What is unit testing ?
+	A: a type of software testing where individual units of a software are 
+		tested
+
+What is integration testing ?
+	A: individual units are combined and tested as a group
+
+What is functional testing ?
+	A: a software testing process used within software development in which
+		software is tested to ensure that it conforms with all requirements
+
+What is seo ?
+	A: Search Engine Optimisation, basically how to get higher rank in 
+		your search engine. SEO is a race, if you don't do it, you will lose 
+		in the race
+
+What are the two methods of seo?
+	A: paid listing (reduce viewer's experience/prone to adblock)
+
+What is A11y ?
+	A: accessibility
+		Methods to search page:
+			organic search
+			social media
+			non-social referrals
+			paid listing
+			direct
+
+What is microformat ?
+	A: a spencial syntax to identify types of content
+
+What is l10n and i18n ?
+	A: localisation and internationalisation
+		localisation: adaptation to meet the language, cultural, and 
+		other requirements of a specfic targe market
+
+		internationalisation: design and development that support localisation
